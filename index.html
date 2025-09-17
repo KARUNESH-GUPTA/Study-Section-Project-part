@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="hi" id="htmlRoot">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>उच्च शिक्षा प्लेटफॉर्म - UP & Punjab</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <script src="data.js"></script>
+    <script src="script.js"></script>
+    <script src="translations.js"></script>
+</head>
+<body data-theme="light">
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <button class="btn-icon mobile-menu-btn" onclick="toggleSidebar()">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <div class="logo">
+                <i class="fas fa-graduation-cap"></i>
+                <span data-i18n="platformName">शिक्षा प्लेटफॉर्म</span>
+            </div>
+
+            <div class="search-container">
+                <input type="text" class="search-input" id="searchInput" data-placeholder="searchPlaceholder" placeholder="वीडियो या विषय खोजें..." onkeypress="handleSearchEnter(event)">
+                <button class="search-btn" onclick="performSearch()">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+
+            <div class="header-actions">
+                <select id="langSelect" class="lang-switcher" onchange="changeLanguage(this.value)">
+                    <option value="hi">हिं</option>
+                    <option value="en">EN</option>
+                    <option value="pa">ਪੰ</option>
+                </select>
+                <button class="btn-icon" onclick="toggleTheme()" id="themeToggle">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <button class="btn-primary" onclick="openSelectionModal()">
+                    <i class="fas fa-university"></i>
+                    <span data-i18n="chooseCourse">कोर्स चुनें</span>
+                </button>
+                <button class="btn-icon mobile-notebook-btn" onclick="toggleNotebook()">
+                    <i class="fas fa-book"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="course-info">
+                    <div class="course-name" id="courseName" data-i18n="selectCourse">कोर्स चुनें</div>
+                    <div class="university-name" id="universityName" data-i18n="university">विश्वविद्यालय</div>
+                </div>
+                <button class="back-btn" onclick="openSelectionModal()" data-i18n-title="changeCourse">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+            </div>
+
+            <nav>
+                <div class="nav-section">
+                    <div class="nav-title" data-i18n="playlist">प्लेलिस्ट</div>
+                    <ul class="nav-list">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" onclick="showAllVideos()">
+                                <i class="fas fa-play-circle"></i>
+                                <span data-i18n="allVideos">सभी वीडियो</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" onclick="showLikedVideos()">
+                                <i class="fas fa-heart"></i>
+                                <span data-i18n="favorites">पसंदीदा</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" onclick="showRecentVideos()">
+                                <i class="fas fa-history"></i>
+                                <span data-i18n="recent">हाल में देखे</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" onclick="showWatchLater()">
+                                <i class="fas fa-clock"></i>
+                                <span data-i18n="watchLater">बाद में देखें</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-title" data-i18n="courseContent">कोर्स सामग्री</div>
+                    <ul class="nav-list" id="courseNavigation">
+                        <!-- Course navigation will be populated here -->
+                    </ul>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="content">
+            <!-- Welcome Screen -->
+            <div class="welcome-screen" id="welcomeScreen">
+                <div class="welcome-icon">
+                    <i class="fas fa-graduation-cap"></i>
+                </div>
+                <h1 class="welcome-title" data-i18n="welcomeTitle">उच्च शिक्षा प्लेटफॉर्म में आपका स्वागत है</h1>
+                <p class="welcome-subtitle" data-i18n="welcomeSubtitle">अपनी पढ़ाई शुरू करने के लिए कोर्स और विश्वविद्यालय चुनें</p>
+                <button class="btn btn-primary" onclick="openSelectionModal()">
+                    <i class="fas fa-rocket"></i>
+                    <span data-i18n="startBtn">शुरू करें</span>
+                </button>
+            </div>
+
+            <!-- Video Section -->
+            <div class="video-section" id="videoSection" style="display: none;">
+                <div class="video-container">
+                    <div class="video-wrapper">
+                        <iframe class="video-frame" id="videoFrame" src="" allowfullscreen></iframe>
+                    </div>
+                    <div class="video-controls">
+                        <div class="control-group">
+                            <button class="control-btn" onclick="previousVideo()" data-i18n-title="previousVideo">
+                                <i class="fas fa-step-backward"></i>
+                            </button>
+                            <button class="control-btn" onclick="nextVideo()" data-i18n-title="nextVideo">
+                                <i class="fas fa-step-forward"></i>
+                            </button>
+                        </div>
+                        <div class="control-group">
+                            <span id="videoDuration">00:00</span>
+                        </div>
+                        
+                        <div class="control-group">
+                            <select class="speed-select" onchange="changePlaybackSpeed()">
+                                <option value="0.5">0.5x</option>
+                                <option value="1" selected>1x</option>
+                                <option value="1.25">1.25x</option>
+                                <option value="1.5">1.5x</option>
+                                <option value="2">2x</option>
+                            </select>
+                            <button class="control-btn" onclick="toggleFullscreen()" data-i18n-title="fullscreen">
+                                <i class="fas fa-expand"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="video-info">
+                    <h2 class="video-title" id="currentVideoTitle" data-i18n="videoTitle">वीडियो शीर्षक</h2>
+                    <div class="video-actions">
+                        <button class="btn btn-secondary" onclick="toggleLike()" id="likeBtn">
+                            <i class="far fa-heart"></i>
+                            <span data-i18n="like">पसंद करें</span>
+                        </button>
+                        <button class="btn btn-secondary" onclick="addToWatchLater()">
+                            <i class="fas fa-clock"></i>
+                            <span data-i18n="watchLater">बाद में देखें</span>
+                        </button>
+                        <button class="btn btn-secondary" onclick="shareVideo()">
+                            <i class="fas fa-share"></i>
+                            <span data-i18n="share">शेयर करें</span>
+                        </button>
+                        <button class="btn btn-secondary" onclick="downloadVideo()">
+                            <i class="fas fa-download"></i>
+                            <span data-i18n="download">डाउनलोड</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Videos Grid Section -->
+            <div class="videos-section" id="videosSection" style="display: none;">
+                <div class="section-header">
+                    <h2 class="section-title" id="sectionTitle" data-i18n="allVideos">सभी वीडियो</h2>
+                    <div class="view-controls">
+                        <button class="btn btn-secondary active" onclick="setGridView()" id="gridViewBtn">
+                            <i class="fas fa-th"></i>
+                        </button>
+                        <button class="btn btn-secondary" onclick="setListView()" id="listViewBtn">
+                            <i class="fas fa-list"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="videos-grid" id="videosGrid">
+                    <!-- Videos will be populated here -->
+                </div>
+            </div>
+        </main>
+
+        <!-- Notebook Panel -->
+        <aside class="notebook" id="notebook">
+            <div class="notebook-header">
+                <div class="notebook-title">
+                    <i class="fas fa-book"></i>
+                    <span data-i18n="myNotebook">मेरा नोटबुक</span>
+                </div>
+                <button class="btn-icon" onclick="toggleNotebook()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <div class="notebook-content">
+                <form class="note-form" onsubmit="saveNote(event)">
+                    <div class="form-group">
+                        <label class="form-label" data-i18n="title">शीर्षक</label>
+                        <input type="text" class="form-input" id="noteTitle" data-placeholder="noteTitlePlaceholder" placeholder="नोट का शीर्षक...">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" data-i18n="subject">विषय</label>
+                        <select class="form-input" id="noteSubject">
+                            <option value="" data-i18n="selectSubject">विषय चुनें</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" data-i18n="content">सामग्री</label>
+                        <div class="editor-toolbar">
+                            <button type="button" class="toolbar-btn" onclick="formatText('bold')" title="Bold">
+                                <strong>B</strong>
+                            </button>
+                            <button type="button" class="toolbar-btn" onclick="formatText('italic')" title="Italic">
+                                <em>I</em>
+                            </button>
+                            <button type="button" class="toolbar-btn" onclick="formatText('underline')" title="Underline">
+                                <u>U</u>
+                            </button>
+                        </div>
+                        <textarea class="form-input form-textarea" id="noteContent" data-placeholder="noteContentPlaceholder" placeholder="यहाँ अपना नोट लिखें..."></textarea>
+                    </div>
+
+                    <div class="note-actions">
+                        <button type="button" class="btn btn-secondary" onclick="toggleVoiceRecording()" id="voiceBtn">
+                            <i class="fas fa-microphone"></i>
+                            <span data-i18n="voiceNote">वॉइस नोट</span>
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i>
+                            <span data-i18n="save">सेव करें</span>
+                        </button>
+                    </div>
+
+                    <div class="voice-status" id="voiceStatus">
+                        <i class="fas fa-microphone"></i>
+                        <span data-i18n="recording">रिकॉर्डिंग चल रही है...</span>
+                    </div>
+                </form>
+
+                <div class="saved-notes">
+                    <div class="nav-title" data-i18n="savedNotes">सहेजे गए नोट्स</div>
+                    <div class="notes-list" id="notesList">
+                        <!-- Saved notes will appear here -->
+                    </div>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <!-- Selection Modal -->
+    <div class="modal" id="selectionModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" data-i18n="selectCourseUni">कोर्स और विश्वविद्यालय चुनें</h2>
+                <button class="modal-close" onclick="closeSelectionModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <!-- State Selection -->
+                <div class="selection-step" id="stateStep">
+                    <h3 class="step-title" data-i18n="selectState">राज्य चुनें</h3>
+                    <div class="options-grid" id="statesGrid">
+                        <!-- States will be populated here -->
+                    </div>
+                </div>
+
+                <!-- University Selection -->
+                <div class="selection-step hidden" id="universityStep">
+                    <h3 class="step-title" data-i18n="selectUniversity">विश्वविद्यालय चुनें</h3>
+                    <div class="options-grid" id="universitiesGrid">
+                        <!-- Universities will be populated here -->
+                    </div>
+                </div>
+
+                <!-- Course Selection -->
+                <div class="selection-step hidden" id="courseStep">
+                    <h3 class="step-title" data-i18n="selectCourse">कोर्स चुनें</h3>
+                    <div class="options-grid" id="coursesGrid">
+                        <!-- Courses will be populated here -->
+                    </div>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="previousStep()" id="prevStepBtn" disabled>
+                    <i class="fas fa-arrow-left"></i>
+                    <span data-i18n="previous">पिछला</span>
+                </button>
+                <button class="btn btn-primary" onclick="nextStep()" id="nextStepBtn" disabled>
+                    <span data-i18n="next">आगे</span>
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Feedback Modal -->
+    <div class="modal" id="feedbackModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" data-i18n="giveFeedback">फीडबैक दें</h2>
+                <button class="modal-close" onclick="closeFeedbackModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form class="note-form" onsubmit="submitFeedback(event)">
+                    <div class="form-group">
+                        <label class="form-label" data-i18n="yourName">आपका नाम</label>
+                        <input type="text" class="form-input" id="feedbackName" data-placeholder="yourNamePlaceholder" placeholder="आपका नाम..." required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" data-i18n="emailOptional">ईमेल (वैकल्पिक)</label>
+                        <input type="email" class="form-input" id="feedbackEmail" data-placeholder="emailPlaceholder" placeholder="आपका ईमेल...">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" data-i18n="rating">रेटिंग</label>
+                        <div style="display: flex; gap: 5px; align-items: center;">
+                            <span>★★★★★</span>
+                            <input type="range" min="1" max="5" value="5" class="form-input" id="feedbackRating" style="flex: 1;">
+                            <span id="ratingValue">5/5</span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" data-i18n="yourFeedback">आपका फीडबैक</label>
+                        <textarea class="form-input form-textarea" id="feedbackMessage" data-placeholder="feedbackPlaceholder" placeholder="कृपया अपना फीडबैक दें..." required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-paper-plane"></i>
+                        <span data-i18n="send">भेजें</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chatbot Modal -->
+    <div class="modal" id="chatbotModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" data-i18n="assistantChatbot">सहायक चैटबॉट</h2>
+                <button class="modal-close" onclick="closeChatbotModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="chat-container">
+                    <div class="chat-messages" id="chatMessages">
+                        <div class="chat-message bot-message">
+                            <strong data-i18n="assistant">सहायक:</strong> 
+                            <span data-i18n="chatWelcome">नमस्ते! मैं आपकी कैसे सहायता कर सकता हूँ?</span>
+                        </div>
+                    </div>
+                    <div class="chat-input-container">
+                        <input type="text" class="form-input" id="chatInput" data-placeholder="chatInputPlaceholder" placeholder="अपना सवाल पूछें..." onkeypress="handleChatEnter(event)">
+                        <button class="btn btn-primary" onclick="sendChatMessage()">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Buttons -->
+    <button class="floating-chatbot" onclick="openChatbotModal()" data-i18n-title="assistantChatbot">
+        <i class="fas fa-comments"></i>
+    </button>
+
+    <button class="floating-feedback" onclick="openFeedbackModal()" data-i18n-title="giveFeedback">
+        <i class="fas fa-star"></i>
+    </button>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Scripts -->
+    <script src="data.js"></script>
+    <script src="translations.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
